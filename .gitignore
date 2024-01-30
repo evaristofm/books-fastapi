@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+fastapi_books_venv
+.idea
 
 # C extensions
 *.so
