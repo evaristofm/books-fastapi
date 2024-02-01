@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 fastapi_books_venv
 .idea/
-
+venv_todo
 # C extensions
 *.so
 
