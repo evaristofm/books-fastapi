@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Path
+from fastapi import FastAPI, Path, Query
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -67,13 +67,13 @@ async def get_book_by_id(book_id: int = Path(gt=0)):
 
 
 @app.get('/books/published/')
-async def get_books_by_published_date(published_date: int):
+async def get_books_by_published_date(published_date: int = Query(gt=1999, lt=2031)):
     books_for_published = [book for book in BOOKS if book.published_date == published_date]
     return books_for_published
 
 
 @app.get('/books/')
-async def get_books_by_rating(rating: int):
+async def get_books_by_rating(rating: int = Query(gt=0, lt=6)):
     books_by_rating = [book for book in BOOKS if book.rating == rating]
     return books_by_rating
 
