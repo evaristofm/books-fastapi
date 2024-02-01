@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Path, Query
+from fastapi import FastAPI, Path, Query, HTTPException, status
 from pydantic import BaseModel, Field
 
 app = FastAPI()
@@ -53,50 +53,58 @@ BOOKS = [
 ]
 
 
-@app.get('/books')
+@app.get('/books', status_code=status.HTTP_200_OK)
 async def get_all_books():
     return BOOKS
 
 
-@app.get('/books/{book_id}')
+@app.get('/books/{book_id}', status_code=status.HTTP_200_OK)
 async def get_book_by_id(book_id: int = Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
-    return None
+    raise HTTPException(status_code=404, detail='Item not found!')
 
 
-@app.get('/books/published/')
+@app.get('/books/published/', status_code=status.HTTP_200_OK)
 async def get_books_by_published_date(published_date: int = Query(gt=1999, lt=2031)):
     books_for_published = [book for book in BOOKS if book.published_date == published_date]
     return books_for_published
 
 
-@app.get('/books/')
+@app.get('/books/', status_code=status.HTTP_200_OK)
 async def get_books_by_rating(rating: int = Query(gt=0, lt=6)):
     books_by_rating = [book for book in BOOKS if book.rating == rating]
     return books_by_rating
 
 
-@app.post('/books')
+@app.post('/books', status_code=status.HTTP_201_CREATED)
 async def create_book(book: BookRequest):
     new_book = Book(**book.model_dump())
     BOOKS.append(find_book_id(new_book))
 
 
-@app.put('/books/')
+@app.put('/books/', status_code=status.HTTP_204_NO_CONTENT)
 async def update_book(book: BookRequest):
+    book_change = False
     for b in range(len(BOOKS)):
         if BOOKS[b].id == book.id:
             BOOKS[b] = Book(**book.model_dump())
+            book_change = True
+    if not book_change:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Item not found!')
 
 
-@app.delete('/books/{book_id}')
+@app.delete('/books/{book_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int = Path(gt=0)):
+    book_change = False
     for item in range(len(BOOKS)):
         if BOOKS[item].id == book_id:
             BOOKS.pop(item)
+            book_change = True
             break
+    if not book_change:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Item not found!')
 
 
 def find_book_id(book: Book):
