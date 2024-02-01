@@ -29,7 +29,7 @@ class BookRequest(BaseModel):
     author: str = Field(min_length=3)
     description: str = Field(min_length=3, max_length=100)
     rating: int = Field(gt=0, lt=6)
-    published_date: int = Field(gt=0)
+    published_date: int = Field(gt=1999, lt=2031)
 
     class Config:
         json_schema_extra = {
