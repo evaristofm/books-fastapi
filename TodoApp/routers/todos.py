@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Path
 
 
 from models import Todos
+from auth import get_current_user
 from database import get_db
 from schemas import TodoRequest
 
@@ -11,6 +12,7 @@ from schemas import TodoRequest
 router = APIRouter(prefix='/todo', tags=['todo'])
 
 db_dependency = Annotated[Session, Depends(get_db)]
+user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.get('/')
@@ -27,8 +29,11 @@ async def read_todo_by_id(db: db_dependency, todo_id: int = Path(gt=0)):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_todo(db: db_dependency, todo_request: TodoRequest):
-    todo_model = Todos(**todo_request.model_dump())
+async def create_todo(user: user_dependency, db: db_dependency, todo_request: TodoRequest):
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Authentication failed.')
+
+    todo_model = Todos(**todo_request.model_dump(), user_id=user.get('id'))
 
     db.add(todo_model)
     db.commit()
