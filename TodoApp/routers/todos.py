@@ -16,13 +16,21 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
 @router.get('/')
-async def read_all_todos(db: db_dependency):
-    return db.query(Todos).all()
+async def read_all_todos(user: user_dependency, db: db_dependency):
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Authentication failed.')
+
+    return db.query(Todos).filter(Todos.user_id == user.get('id')).all()
 
 
 @router.get('/{todo_id}', status_code=status.HTTP_200_OK)
-async def read_todo_by_id(db: db_dependency, todo_id: int = Path(gt=0)):
-    todo_db = db.query(Todos).filter(Todos.id == todo_id).first()
+async def read_todo_by_id(user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)):
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Authentication failed.')
+
+    todo_db = (db.query(Todos)
+               .filter(Todos.id == todo_id)
+               .filter(Todos.user_id == user.get('id')).first())
     if todo_db:
         return todo_db
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Todo not found!')
