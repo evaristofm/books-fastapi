@@ -19,6 +19,7 @@ class CreateUserRequest(BaseModel):
 
 class ChangePassWordUser(BaseModel):
     password: str = Field(min_length=6)
+    change_password: str = Field(min_length=6)
 
 
 class Token(BaseModel):
