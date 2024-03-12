@@ -2,9 +2,9 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import Depends, status, HTTPException, APIRouter
 
-from auth import get_current_user
-from models import Todos
-from database import get_db
+from ..auth import get_current_user
+from ..models import Todos
+from ..database import get_db
 
 router = APIRouter(prefix='/admin', tags=['admin'])
 

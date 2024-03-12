@@ -3,9 +3,9 @@ from datetime import timedelta
 from fastapi import APIRouter, Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
-from models import User
-from schemas import CreateUserRequest, Token
-from auth import bcrypt_context, authenticate_user, create_acess_token, db_dependency
+from ..models import User
+from ..schemas import CreateUserRequest, Token
+from ..auth import bcrypt_context, authenticate_user, create_acess_token, db_dependency
 
 router = APIRouter(prefix='/auth', tags=['auth'])
 
@@ -18,6 +18,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
         role=create_user_request.role,
+        phone_number=create_user_request.phone_number,
         hashed_password=bcrypt_context.hash(create_user_request.password),
         is_active=True
 

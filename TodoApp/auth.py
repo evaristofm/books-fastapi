@@ -7,8 +7,8 @@ from fastapi import Depends, status, HTTPException
 
 from fastapi.security import OAuth2PasswordBearer
 
-from models import User
-from database import get_db
+from .models import User
+from .database import get_db
 
 
 SECRET_KEY = 'alklzmdf'

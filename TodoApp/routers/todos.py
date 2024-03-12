@@ -3,10 +3,10 @@ from sqlalchemy.orm import Session
 from fastapi import APIRouter, HTTPException, status, Depends, Path
 
 
-from models import Todos
-from auth import get_current_user
-from database import get_db
-from schemas import TodoRequest
+from ..models import Todos
+from ..auth import get_current_user
+from ..database import get_db
+from ..schemas import TodoRequest
 
 
 router = APIRouter(prefix='/todo', tags=['todo'])

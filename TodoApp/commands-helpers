@@ -1,0 +1,6 @@
+# Alembic
+
+alembic init <folder name>
+alembic revision -m <message> cria uma nova revisão do ambiente
+alembic upgrade <revision> roda ou atualiza as migrações no DB
+alembic downgrade -1 roda ou volta a migração no DB

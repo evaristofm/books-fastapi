@@ -2,10 +2,10 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import Depends, status, HTTPException, APIRouter
 
-from auth import get_current_user, bcrypt_context
-from database import get_db
-from models import User
-from schemas import ChangePassWordUser
+from ..auth import get_current_user, bcrypt_context
+from ..database import get_db
+from ..models import User
+from ..schemas import ChangePassWordUser
 
 
 router = APIRouter(prefix='/users', tags=['users'])
