@@ -12,7 +12,7 @@ from .database import get_db
 
 
 SECRET_KEY = 'alklzmdf'
-ALGOTITHM = 'HS256'
+ALGORITHM = 'HS256'
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
@@ -24,7 +24,7 @@ def create_acess_token(username: str, user_id: int, role: str, expires_delta: ti
     encode = {'sub': username, 'id': user_id, 'role': role}
     expires = datetime.utcnow() + expires_delta
     encode.update({'exp': expires})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGOTITHM)
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 def authenticate_user(username: str, password: str, db: db_dependency):
@@ -38,10 +38,11 @@ def authenticate_user(username: str, password: str, db: db_dependency):
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGOTITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: str = payload.get('id')
         user_role: str = payload.get('role')
+
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail='Could not validate user.')
